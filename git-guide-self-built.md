@@ -1,64 +1,38 @@
-# Git Guide Self-Built
+# Git, GitHub, and Workflow
 
-This file is the step-by-step workspace for building the guide gradually.
+## What Is Git
 
-## How To Use This File
+`Git` is a local tool you install on your PC which help you keep track of changes in a code projects. Git organize each project as a folder (including all its subfolders). Once you run command `git init` in a particular folder, Git starts a repository within this folder, which will include all the files in this folder and its subfolders and the change histories for each file.
 
-- add one idea at a time
-- keep the order close to the team's real working situation
-- refine wording before expanding into more sections
-- move stable material into `GUIDE.md` when it is ready
+It is normal for Git to feel abstract at first. To understand how Git actually records and manages history within a folder/repository. We start with some fundamental concepts in Git:
 
-## Current Starting Points
+- **Git repository/repo** : refers to a project folder with all its contents and change histories.
+  
+- **Commit**: History is recorded by Git as commits. Each commit is a full screenshot of the contents of project folder at a given time. 
+  
+  Believe it or not, a commit has everything, a full screenshot of the folder, not just the incremental, at the time the commit is created. (except those specified to be ignored in a repository setting file `.gitignore`). But you should create as many commits as you'd like without worrying over-growing repo size, since Git compress the storage of commits by their incremental changes.
 
-- what is version control
-- what Git is
-- what GitHub is
-- what a commit is
-- what a branch is
-- what a remote is
-- when to use pull requests
-- how conflicts happen
-- how local environment differences affect collaboration
+  However, this effective compression for storage only happens to pure text files (code files like .cs .py .txt etc.). Binary files like docx, Excel, PPT, PDF, do not have this benefits, since Git cannot compare their changes. If you store binary files in Git and change them often. The repository size can grow very big.
 
-## What Is Version Control
+  When git initial a repository, it creates a hidden subfolder `.git` which stores everything git needs to remember the history of this repository. If you simply delete this folder, you wipe out the history and the folder will no longer be recognized by Git as a managed repository.
 
-Version control is a way to keep track of changes in a project over time.
 
-It helps you answer simple but important questions:
+    ### How a Commit is created?
 
-- what changed
-- who changed it
-- when it changed
-- why it changed
-- how to go back if something breaks
 
-Without version control, people often pass files around, rename them by date, or keep copies like:
 
-```text
-project-final
-project-final-v2
-project-final-real
-project-final-real-2
-```
+- **Worktree / working tree** :  the actual directory of files you see and edit on disk.
 
-That quickly becomes messy, especially when more than one person is working on the same files.
+- **Index (also called the Staging area)** is an intermediate snapshot of your project that sits between your working files and the next commit. It's where you prepared your next commit.
 
-With version control, the project keeps a recorded history instead:
 
-```text
-start -> change A -> change B -> fix bug -> current version
-```
 
-So in simple terms:
+    ```text
+    Working directory (your files)
+    ↓
+    Index (staging area)
+    ↓
+    Repository (commits / HEAD)
+    ```
 
-- version control is a shared memory for a project
-- it records progress step by step
-- it makes collaboration safer
-- it helps you recover from mistakes
 
-Git is one version control system. GitHub is a platform built around Git for sharing and collaborating on that history.
-
-## Notes
-
-Use this file as the practical draft pad. It does not need to be polished from the start.
