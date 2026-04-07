@@ -12,6 +12,10 @@ Folder structure: Git only take care of the folder it is located in and its subf
 - Commit 
 - Binary files like docx, pptx, excel, pdf. Can be controlled, but not comparable or compressible. (exceptions about dlls.)
 
+Repositories contain a project's files and version history. 
+
+
+
 Branch, a pointer/label to different commits
 
 How to back it up on Cloud.
