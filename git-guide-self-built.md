@@ -17,11 +17,11 @@ It is normal for Git to feel abstract at first. To understand how Git actually r
   When git initial a repository, it creates a hidden subfolder `.git` which stores everything git needs to remember the history of this repository. If you simply delete this folder, you wipe out the history and the folder will no longer be recognized by Git as a managed repository.
 
 
-### How a Commit is created?
+## How to do version control with Git Commit
 
 After you initiate a repo in a project folder with `git init`, you start building the project by adding code files. After certain amount of work, you are ready to save the first screenshot (commit) of the project. Here is what you would do:
 
-Before creating a commit, you first choose which changes to include, and stage them into a **staging area** called **index**. Then you run command `git commit` with a message about this commit.
+Before creating a commit, you first choose which changes to include, and stage them into a **staging area** called **index**. Then you run command `git commit` with a message to turn the staging area into a commit.
 
 ```bash
 git add <file-name>  // add certain file to staging area. Or
@@ -61,9 +61,15 @@ So each snapshot in Git history is created by a **Edit/Stage/Commit** mini workf
 After a while working in the project by yourself, you will likely get a line of commit history:
 
 
+  ```text
+  A1B2C3D ------> E4F5G6H -----> 8A9B0C1 -----> x28nsiusn
+  1st commit      add login      fix bug        add feature xxx
+  ```
+
+Each commit also has its own unique hash ID. This is the long string of letters and numbers Git uses to identify that commit. A commit also saves the commit message and the author and time of creation.
+
 
 Note: Directly working with git commands can be confusing too. We recommend using your IDE (like Visual Studio or VS Code) UI in creating commits.
-
 
 
 
