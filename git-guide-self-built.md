@@ -17,22 +17,54 @@ It is normal for Git to feel abstract at first. To understand how Git actually r
   When git initial a repository, it creates a hidden subfolder `.git` which stores everything git needs to remember the history of this repository. If you simply delete this folder, you wipe out the history and the folder will no longer be recognized by Git as a managed repository.
 
 
-    ### How a Commit is created?
+### How a Commit is created?
 
+After you initiate a repo in a project folder with `git init`, you start building the project by adding code files. After certain amount of work, you are ready to save the first screenshot (commit) of the project. Here is what you would do:
+
+Before creating a commit, you first choose which changes to include, and stage them into a **staging area** called **index**. Then you run command `git commit` with a message about this commit.
+
+```bash
+git add <file-name>  // add certain file to staging area. Or
+git add .            // add all files to staging area. more commonly used.
+
+git commit -m "your commit message"
+```
+
+`git add` puts your selected file changes into the staging area, i.e. Index.
+
+`git commit` creates a new commit from what is currently in the index.
+
+
+- **Commit message**: a short text that describes what this commit is about.
 
 
 - **Worktree / working tree** :  the actual directory of files you see and edit on disk.
 
-- **Index (also called the Staging area)** is an intermediate snapshot of your project that sits between your working files and the next commit. It's where you prepared your next commit.
+- **Index (also called the Staging area)** is an intermediate snapshot of your project that sits between your working files and the next commit. It's where you prepared your next commit. It can contain only part of the last batch of work (you may organize certain edits into one commit, and save the rest for the next commit.)
 
 
 
     ```text
     Working directory (your files)
     ↓
+    ↓  <- git add .
+    ↓
     Index (staging area)
+    ↓
+    ↓  <- git commit -m 'message'
     ↓
     Repository (commits / HEAD)
     ```
+
+So each snapshot in Git history is created by a **Edit/Stage/Commit** mini workflow.
+
+After a while working in the project by yourself, you will likely get a line of commit history:
+
+
+
+Note: Directly working with git commands can be confusing too. We recommend using your IDE (like Visual Studio or VS Code) UI in creating commits.
+
+
+
 
 
