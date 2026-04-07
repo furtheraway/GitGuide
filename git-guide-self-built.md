@@ -56,7 +56,9 @@ git commit -m "your commit message"
     Repository (commits / HEAD)
     ```
 
-So each snapshot in Git history is created by a **Edit/Stage/Commit** mini workflow.
+So each snapshot in Git history is created by a **Edit/Stage/Commit** mini workflow. 
+
+Note: Directly working with git commands can be confusing. We recommend using your IDE (like Visual Studio or VS Code) UI in creating commits.
 
 After a while working in the project by yourself, you will likely get a line of commit history:
 
@@ -69,8 +71,45 @@ After a while working in the project by yourself, you will likely get a line of 
 Each commit also has its own unique hash ID. This is the long string of letters and numbers Git uses to identify that commit. A commit also saves the commit message and the author and time of creation.
 
 
-Note: Directly working with git commands can be confusing too. We recommend using your IDE (like Visual Studio or VS Code) UI in creating commits.
 
 
+
+## When code start diverge (main and feature branch)
+
+At first, you keep developing the code base and creating commits one by one, each commit is the parent of the commit following it, and you get linear history. Often this linear history is your main development line, usually called `main`.
+
+After some commits, you release the current version at one commit location.
+
+Now you want to try a new feature, but you do not want to disturb the released code on `main`. So you create another branch from the latest commit on the main develop line.
+
+- **Branch**: a symbolic pointer to a commit in Git history.
+
+A branch does not copy the whole repository. It is just a name that points to one commit.
+
+When new commits are created on that branch, the branch pointer moves forward to the new latest commit.
+
+Example:
+
+```text
+main:    A ---- B ---- C
+                       ^
+                    released
+```
+
+Then a new feature branch is created from commit `C`:
+
+```text
+main:    A ---- B ---- C
+                       \
+feature-x:              D ---- E
+```
+
+Now the code history has diverged.
+
+`main` still points to commit `C`.
+
+`feature-x` points to commit `E`.
+
+This is why Git history is not always one straight line. It can become a tree.
 
 
