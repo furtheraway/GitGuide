@@ -84,9 +84,25 @@ Now you want to try a new feature, but you do not want to disturb the released c
 
 - **Branch**: a symbolic pointer to a commit in Git history.
 
+- **main**: usually the default branch name in a repository.
+
+- **HEAD**: a special pointer that tells Git what branch or commit you are currently on.
+
 A branch does not copy the whole repository. It is just a name that points to one commit.
 
 When new commits are created on that branch, the branch pointer moves forward to the new latest commit.
+
+When you are working on `main`, `HEAD` points to `main`.
+
+```text
+HEAD -> main -> C
+```
+
+If you create a new commit while `HEAD` is on `main`, `main` moves forward to the new commit.
+
+```text
+HEAD -> main -> D
+```
 
 Example:
 
@@ -110,6 +126,12 @@ Now the code history has diverged.
 
 `feature-x` points to commit `E`.
 
-This is why Git history is not always one straight line. It can become a tree.
+If you switch to `feature-x`, then `HEAD` points to `feature-x` instead.
 
+```text
+main            -> C
+HEAD -> feature-x -> E
+```
+
+This is why Git history is not always one straight line. It can become a tree.
 
