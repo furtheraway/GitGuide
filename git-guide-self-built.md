@@ -38,9 +38,16 @@ git commit -m "your commit message"
 - **Commit message**: a short text that describes what this commit is about.
 
 
-- **Worktree / working tree** :  the actual directory of files you see and edit on disk.
+- **Worktree / working tree** :  the actual directory of files you see and edit on disk. I can be identical to the Index (staging area), but once you start editing files, it will differ from staging area, until next time you run `git add .` which add all files in `working tree` to index. Once Index is changed, it differs from the commit where HEAD is pointing to, until you commit your stage area to a new commit, then last commit and and index become identical. Note here, the index (staging area is not emptied, it just have no difference/changes from the commit snapshot.)
 
-- **Index (also called the Staging area)** is an intermediate snapshot of your project that sits between your working files and the next commit. It's where you prepared your next commit. It can contain only part of the last batch of work (you may organize certain edits into one commit, and save the rest for the next commit.)
+- **Index (also called the Staging area)** is an intermediate snapshot of your project that sits between your working files and the next commit. It's where you prepared your next commit. It can contain only part of the last batch of work (you may organize certain edits into Index for the next coming commit, and save the rest for a future commit.)
+  
+
+Git has three key layers:
+
+1. HEAD (current commit / branch pointer)
+2. Index (staged snapshot)
+3. Working directory (your files on disk)
 
 
 
@@ -60,6 +67,8 @@ So each snapshot in Git history is created by a **Edit/Stage/Commit** mini workf
 
 Note: Directly working with git commands can be confusing. We recommend using your IDE (like Visual Studio or VS Code) UI in creating commits.
 
+
+
 After a while working in the project by yourself, you will likely get a line of commit history:
 
 
@@ -70,13 +79,17 @@ After a while working in the project by yourself, you will likely get a line of 
 
 Each commit also has its own unique hash ID. This is the long string of letters and numbers Git uses to identify that commit. A commit also saves the commit message and the author and time of creation.
 
-
+You can go back (restore) the working directory to any of the commits in the history. This is the power of Git!
 
 
 
 ## When code start diverge (main and feature branch)
 
-At first, you keep developing the code base and creating commits one by one, each commit is the parent of the commit following it, and you get linear history. Often this linear history is your main development line, usually called `main`.
+At first, you keep developing the code base and creating commits one by one, each commit is the parent of the commit following it, and you get a linear history. Often this linear history is your main development line, usually called `main`.
+
+```text
+A ---- B ---- C (main)
+```
 
 After some commits, you release the current version at one commit location.
 
@@ -86,25 +99,21 @@ Now you want to try a new feature, but you do not want to disturb the released c
 
 - **main**: usually the default branch name in a repository.
 
-- **HEAD**: a special pointer that tells Git what branch or commit you are currently on.
+- **HEAD**: a special pointer that tells Git what branch or commit you are currently on (your working folder is in the snapshot state of that commit). When you are working on `main`, `HEAD` points to `main`.
 
-A branch does not copy the whole repository. It is just a name that points to one commit.
-
-When new commits are created on that branch, the branch pointer moves forward to the new latest commit.
-
-When you are working on `main`, `HEAD` points to `main`.
+A branch does not copy the whole repository. It is just a name/label that points to a commit.
 
 ```text
-HEAD -> main -> C
+A ---- B ---- C (main <- HEAD)
 ```
 
 If you create a new commit while `HEAD` is on `main`, `main` moves forward to the new commit.
 
 ```text
-HEAD -> main -> D
+A ---- B ---- C ---- D (main <- HEAD)
 ```
 
-Example:
+After create a new branch called "feature-x", and "checkout" it. 
 
 ```text
 main:    A ---- B ---- C
@@ -135,3 +144,37 @@ HEAD -> feature-x -> E
 
 This is why Git history is not always one straight line. It can become a tree.
 
+
+## What git cherry-pick is
+
+git cherry-pick takes the changes introduced by a specific commit and applies them as a new commit on your current branch.
+
+It does not move or copy the original commit. It creates a new commit with:
+
+- the same changes (diff)
+- a different commit hash
+- a different parent (your current branch)
+
+
+## How to use reset to squash history commits
+
+
+
+
+
+```text
+A ---- B ---- C ---- D (main <- HEAD)
+```
+
+### better to think of Git history as a graph of connected dots(commits, snapshots) than different lines of branches, since branch is just a pointer to a commit in the graph. The connected commits are directional, each commit has its parent (most commits have one parent, merge commit have two, squash merge has one.)
+
+why we focus on commit instead of a branch? since a commit can be involved in the history of multiple branch lines. E.g, if you merge branch B into branch A (you can do this only when you are on branch A, i.e. A is checked out), then the newly created merge commit M will be where branch A (and the HEAD) now pointing to. Branch B still point to where it was.
+
+Git merge should be read as "merge branch B **into** A" or "merge branch A **into** B", not "merge branch A **and** B". It is directional. `merge B into A` and `merge A into B` will produce different commits even though there is no conflicts in merge. If you `merge B into A`, which produce a merge commit M1 on branch A (git only move the current branch pointer, B is not aware about M1 yet), and then immediately `merge A into B`, it will fast forward B to M1 (now both A).
+
+### Traditional merge has two parents commits, and the newly create merge commit carries history from both parents with it. But squash merge only has one parent, the commit where `merge --squash` is called. (remember branch is just a pointer to a commit.)
+
+
+## When we merge two commits(branches), particularly when we `--allow-unrelated-histories`, we should not expect Git make it just work, we need to resolve conflicts (if not resolved, that conflict section will be missing), and we even need to inspect all the auto-merged sections!!(in one forced un-related history merge, we observed that old old old deleted sections come back into the merge result. Not surprisingly, its unrelated history. That's probably the reason git all auto commit by default if there is no conflict.)
+
+### in VS Git UI, show commit details != compare two commits, particularly in a merge. 
