@@ -2,7 +2,7 @@
 
 ## What Is Git
 
-`Git` is a local tool you install on your PC which help you keep track of changes in a code projects. Git organize each project as a folder (including all its subfolders). Once you run command `git init` in a particular folder, Git starts a repository within this folder, which will include all the files in this folder and its subfolders and the change histories for each file.
+`Git` is a local tool you install on your PC which help you keep track of changes in a code project. Git organize each project as a folder (including all its subfolders). Once you run command `git init` in a particular folder, Git starts a repository within this folder, which will include all the files in this folder and its subfolders and the change histories for each file.
 
 It is normal for Git to feel abstract at first. To understand how Git actually records and manages history within a folder/repository. We start with some fundamental concepts in Git:
 
@@ -46,7 +46,7 @@ git commit -m "your commit message"
 Git has three key layers:
 
 1. HEAD (current commit / branch pointer)
-2. Index (staged snapshot)
+2. Index (staged snapshot, to be created as next commit)
 3. Working directory (your files on disk)
 
 
@@ -54,7 +54,7 @@ Git has three key layers:
     ```text
     Working directory (your files)
     ↓
-    ↓  <- git add .
+    ↓  <- git add .    (dot . matches all file and subfolders)
     ↓
     Index (staging area)
     ↓
@@ -97,7 +97,7 @@ Now you want to try a new feature, but you do not want to disturb the released c
 
 - **Branch**: a symbolic pointer to a commit in Git history.
 
-- **main**: usually the default branch name in a repository.
+- **main**: usually the default branch name in a repository. (this main or master branch, the name suggested something special, like the confusing remote named 'origin', but they are just the name of a branch or pointer, it can be anything, nothing specially about it. But you do want to name your branches according to their intended purpose in the Git workflow you adapt).
 
 - **HEAD**: a special pointer that tells Git what branch or commit you are currently on (your working folder is in the snapshot state of that commit). When you are working on `main`, `HEAD` points to `main`.
 
@@ -175,6 +175,113 @@ Git merge should be read as "merge branch B **into** A" or "merge branch A **int
 ### Traditional merge has two parents commits, and the newly create merge commit carries history from both parents with it. But squash merge only has one parent, the commit where `merge --squash` is called. (remember branch is just a pointer to a commit.)
 
 
-## When we merge two commits(branches), particularly when we `--allow-unrelated-histories`, we should not expect Git make it just work, we need to resolve conflicts (if not resolved, that conflict section will be missing), and we even need to inspect all the auto-merged sections!!(in one forced un-related history merge, we observed that old old old deleted sections come back into the merge result. Not surprisingly, its unrelated history. That's probably the reason git all auto commit by default if there is no conflict.)
+### When we merge two commits(branches), particularly when we `--allow-unrelated-histories`, we should not expect Git make it just work, we need to resolve conflicts (if not resolved, that conflict section will be missing), and we even need to inspect all the auto-merged sections!!(in one forced un-related history merge, we observed that old old old deleted sections come back into the merge result. Not surprisingly, its unrelated history. That's probably the reason git all auto commit by default if there is no conflict.)
 
 ### in VS Git UI, show commit details != compare two commits, particularly in a merge. 
+
+Talk about the differences between `git reset` and `git checkout`
+* git reset → moves the branch to a commit
+* git checkout → moves your working position to a commit (possibly detaching HEAD)
+
+---
+---
+---
+
+
+## Commands to be used in the workflow charts
+
+
+
+
+--
+
+
+```bash
+# Merge a remote branch to local
+
+git fetch <remote-name>  # fetch commit history from a remote to local, which is basically updating local knowledge about the state of the remote, very safe operation. e.g. git fetch gitlab
+
+git branch -r
+
+git checkout main  # you can only merge to the branch you are currently on, so we need to checkout the target branch first.
+
+git merge <remote-name>/<branch>
+
+git merge gitlab/main
+```
+
+
+```bash
+# add, view, and push to a remote
+
+# git remote add <name> <url>
+git remote add origin https://github.com/user/repo.git 
+# origin as a remote name can actually be a very confusing, we recommend name it where it is hosted, like GitHub, Github1, gitlab etc. 
+git remote add gitlab https://gitlab.com/user/repo.git
+
+# push a local branch to remote
+git push <remote-name> <local-branch-name>:<remote-branch-name> # full syntax
+git push gitlab main # is short for
+git push gitlab main:main # When you omit :<remote-branch>, Git assumes: push the local branch to a remote branch of the same name (main here)
+# Unlike 'git merge' only let you merge into your current branch, 'git push' don't care which local branch you're on. You always need to specify which branch to push.
+
+
+
+Your current branch = irrelevant
+
+# merge a remote branch into local current branch
+git fetch <remote-name>
+git merge <remote-name>/<remote-branch-name>
+
+
+# display remotes configured
+git remote -v
+git remote show <remote-name>
+
+# show which local branch is tracked with which remote branch
+git branch -vv
+
+```
+
+```bash
+# How to squash a branch into a new squashed branch
+
+O---A---B---C---D  main
+
+git switch -c <squashed-branch-name> # create and switch to a new branch pointing to the same commit your current branch is on.
+git reset --soft O # reset the newly created branch to a old commit
+git commit -m "Squashed A-D" # created a new squashed commit S
+
+# it produce
+O---S           new-branch
+ \
+  A---B---C---D main
+
+
+```
+
+```bash
+# Some tricks
+
+git diff <commit1> <commit2>
+
+git diff --stat main feature # --stat shows summary # then inspect individual files with diff.
+
+
+# Testing a merge without committing
+
+git switch main
+git merge --no-commit --no-ff feature
+git merge --abort
+
+```
+
+```bash
+# squash merge
+
+git merge --squash feature # A squash merge does not create a commit automatically.
+
+git commit  -m "Squashed changes from feature" # you must commit manually after inspection.
+
+```
+
