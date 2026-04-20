@@ -282,6 +282,19 @@ git merge --abort
 git merge --squash feature # A squash merge does not create a commit automatically.
 
 git commit  -m "Squashed changes from feature" # you must commit manually after inspection.
+```
+
+
+```bash
+# fast-forward in merge happens
+
+git checkout main
+git merger feature
+
+# will result both main and feature branches point to D, and no new merge commit created.
+
+main:    A ── B
+feature:       └── C ── D
 
 ```
 
