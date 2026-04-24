@@ -193,7 +193,30 @@ Talk about the differences between `git reset` and `git checkout`
 
 
 
---
+```bash
+# (1) 
+# clone a particular remote branch to local, then switch to a new branch from it.
+
+# git clone -b <branch-name> --single-branch <repo-url>
+
+git clone -b feature/login --single-branch https://github.com/user/repo.git
+
+# git clone <repo-url> # without -b and --single-branch, you will get the default branch (likely named as main or master), which may NOT contain the code you actually want. Be mindful about which branch you want to clone.
+
+# Usually you should not directly work on the public branch you just cloned. Instead, you create a new branch from it.
+
+# Create a new branch from current branch and checkout the new branch. (so you will start working and add new commits on this new branch, instead of the branch you just cloned.)
+
+git switch -c <new-branch> <base-branch> # if <base-branch> is ignored, base on current branch.
+
+# And you may want to connect this local branch to a different remote (say, a private more secured remote within your institution firewall, instead of the original public remote you cloned from.) so that you can backup your local changes privately on the cloud.
+ 
+git remote add gitlab https://gitlab.com/user/repo.git
+
+# then push up you local dev branch there for backup.
+git push [-u] <remote-name> <local-branch-name>:<remote-branch-name>
+
+```
 
 
 ```bash
@@ -205,9 +228,9 @@ git branch -r
 
 git checkout main  # you can only merge to the branch you are currently on, so we need to checkout the target branch first.
 
-git merge <remote-name>/<branch>
+git merge <remote-name>/<branch-name>
+# e.g. git merge gitlab/main
 
-git merge gitlab/main
 ```
 
 
@@ -220,14 +243,11 @@ git remote add origin https://github.com/user/repo.git
 git remote add gitlab https://gitlab.com/user/repo.git
 
 # push a local branch to remote
-git push <remote-name> <local-branch-name>:<remote-branch-name> # full syntax
+git push [-u] <remote-name> <local-branch-name>:<remote-branch-name> # full syntax
 git push gitlab main # is short for
 git push gitlab main:main # When you omit :<remote-branch>, Git assumes: push the local branch to a remote branch of the same name (main here)
 # Unlike 'git merge' only let you merge into your current branch, 'git push' don't care which local branch you're on. You always need to specify which branch to push.
 
-
-
-Your current branch = irrelevant
 
 # merge a remote branch into local current branch
 git fetch <remote-name>
@@ -298,3 +318,29 @@ feature:       └── C ── D
 
 ```
 
+
+
+# Git Workflow Design for O3-Core collaboration
+
+### Core challenges we face:
+
+1. Contributors developing process can be messy, and people can accidentally commit PHI or secrets into their local repo, these commit history are ok with internal remote like GitLab, but should not go to Public facing GitHub. 
+
+2. After develop locally, changes need to be exchanged between one another, and be integrated in the same repo and publish.
+
+### Where are got stuck: 
+
+1. I assume merge always bring with it the history of commits, but actually we can squash merge to only keep the final result. 
+
+2. Different develop branches can point to (upstream tracked) different remotes (internal and external). 
+
+3. We need to be creative in the mindset (mind model) is that now the Branch on GitHub is actually the "main/release" branch now, and all local main/develop branches at different contributors places are functioning as feature branches.
+
+
+### Solutions we found:
+
+1. Multiple branches going to (tracked by) different remote branches.
+
+2. Merge public into private branch; and only squash merge private branch to public one.
+
+3. Once a local private dev branch is squash merged into public branch, stop working on this dev branch; create a new dev branch from the updated public branch, and continue from there.
